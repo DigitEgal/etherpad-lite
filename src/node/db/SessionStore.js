@@ -15,9 +15,9 @@ const log4js = require('log4js');
 const logger = log4js.getLogger('SessionStore');
 
 module.exports = class SessionStore extends Store {
-  get(sid, fn) {
+  async get(sid, fn) {
     logger.debug(`GET ${sid}`);
-    DB.db.get(`sessionstorage:${sid}`, (err, sess) => {
+    await DB.db.get(`sessionstorage:${sid}`, (err, sess) => {
       if (sess) {
         sess.cookie.expires = ('string' === typeof sess.cookie.expires
           ? new Date(sess.cookie.expires) : sess.cookie.expires);
@@ -32,13 +32,13 @@ module.exports = class SessionStore extends Store {
     });
   }
 
-  set(sid, sess, fn) {
+  async set(sid, sess, fn) {
     logger.debug(`SET ${sid}`);
-    DB.db.set(`sessionstorage:${sid}`, sess, fn);
+    await DB.db.set(`sessionstorage:${sid}`, sess, fn);
   }
 
-  destroy(sid, fn) {
+  async destroy(sid, fn) {
     logger.debug(`DESTROY ${sid}`);
-    DB.db.remove(`sessionstorage:${sid}`, fn);
+    await DB.db.remove(`sessionstorage:${sid}`, fn);
   }
 };
